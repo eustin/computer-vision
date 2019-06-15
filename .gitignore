@@ -1,7 +1,9 @@
-*.zip
+/**/__pycache__
 .idea/
-*.csv
 
+*.zip
+*.csv
+g
 *.jpeg
 *.jpg
 *.gif
