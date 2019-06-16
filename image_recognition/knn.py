@@ -15,3 +15,15 @@ ap.add_argument("-j", "--jobs", type=int, default=-1,
                 help="number of jobs for k-NN distance (-1 uses all available cores")
 args = vars(ap.parse_args())
 
+print("loading images...")
+# create preprocessors - resize images to 32x32 pixels
+preproc_resize = ImagePreprocessor(32, 32)
+
+# load and process
+data_loader = DataLoader(preprocessors=[preproc_resize])
+images, labels = data_loader.load('./datasets/dogs-vs-cats/')
+
+# flatten array into column vector
+# first axis (==0) is number of examples
+# second axis (==1) is elements in column vector
+images_flattened = images.reshape((images.shape[0], 3072))
