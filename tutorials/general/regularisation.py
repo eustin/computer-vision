@@ -2,8 +2,8 @@
 from sklearn.linear_model import SGDClassifier
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
-from compviz_utils.preprocessors import ImagePreprocessor
-from compviz_utils.data_loaders import DataLoader
+from compviz.preprocessors import ImagePreprocessor
+from compviz.data_loaders import DataLoader
 import argparse
 import os
 

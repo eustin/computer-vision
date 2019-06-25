@@ -16,8 +16,8 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
-from compviz_utils.preprocessors import ImagePreprocessor
-from compviz_utils.data_loaders import DataLoader
+from compviz.preprocessors import ImagePreprocessor
+from compviz.data_loaders import DataLoader
 import argparse
 
 ap = argparse.ArgumentParser()
