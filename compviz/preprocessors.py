@@ -20,7 +20,6 @@ class ImageToArray:
         # if None, default setting of image_data_format in ~/.keras/keras.json will be used.
         self.data_format = data_format
 
-
     def preprocess(self, image):
         return img_to_array(image, data_format=self.data_format)
 
