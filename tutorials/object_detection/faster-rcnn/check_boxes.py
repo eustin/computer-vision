@@ -1,12 +1,13 @@
 from config import lisa_config
-from utils.tfannotation import TFAnnotation
+from compviz_utils.tfannotation import TFAnnotation
 from sklearn.model_selection import train_test_split
 from PIL import Image
 import tensorflow as tf
 import os
+import cv2
 
 
-def main(_):
+def check_boxes():
     # open classes output file
     f = open(lisa_config.CLASSES_FILE, 'w')
     # this is the format that tensoflow API expects.
@@ -34,9 +35,6 @@ def main(_):
         # if we are not interested in the label, ignore it
         if label not in lisa_config.CLASSES:
             continue
-
-        # replace forward slash with \\ for windows compatibility
-        imagePath = imagePath.replace('/', '\\')
 
         # build path to input image then find any other bounding boxes and labels
         # associated with image.
@@ -66,11 +64,7 @@ def main(_):
         # initialize the TensorFlow writer and initialize the total
         # number of examples written to file
         print("[INFO] processing ’{}’...".format(dType))
-        print("output path is " + outputPath)
         writer = tf.python_io.TFRecordWriter(outputPath)
-
-        # initialise total number of examples
-        total = 0
 
         # loop over all the keys in the current set, where k
         # is an image path
@@ -107,33 +101,22 @@ def main(_):
                 xMax = endX / w
                 yMin = startY / h
                 yMax = endY / h
-                # update the bounding boxes + labels lists
-                tfAnnot.xMins.append(xMin)
-                tfAnnot.xMaxs.append(xMax)
-                tfAnnot.yMins.append(yMin)
-                tfAnnot.yMaxs.append(yMax)
-                tfAnnot.textLabels.append(label.encode("utf8"))
-                tfAnnot.classes.append(lisa_config.CLASSES[label])
-                tfAnnot.difficult.append(0)
-                # increment the total number of examples
-                total += 1
 
-            # encode the data point attributes using the TensorFlow
-            # helper functions
-            features = tf.train.Features(feature=tfAnnot.build())
-            example = tf.train.Example(features=features)
-            # add the example to the writer
-            writer.write(example.SerializeToString())
-            total += 1
+                # load the input image from disk and denormalize the
+                # bounding box coordinates
+                image = cv2.imread(k)
+                startX = int(xMin * w)
+                startY = int(yMin * h)
+                endX = int(xMax * w)
+                endY = int(yMax * h)
 
-        # close the writer and print diagnostic information to the
-        # user
-        writer.close()
-        print("[INFO] {} examples saved for ’{}’".format(total, dType))
+                # draw the bounding box on the image
+                cv2.rectangle(image, (startX, startY), (endX, endY), (0, 255, 0), 2)
 
-# check to see if the main thread should be started
-if __name__ == "__main__":
-    tf.app.run()
+                print('label is ' + label)
+                cv2.imshow("Image", image)
+                cv2.waitKey(0)
+
 
 
 
